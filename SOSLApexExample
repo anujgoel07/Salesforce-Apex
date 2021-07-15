@@ -1,0 +1,16 @@
+//This example shows how to run a SOSL query in Apex. This SOSL query combines two search terms by using the OR logical operator—it searches for Wingo or SFDC in any field. This example returns all the sample accounts because they each have a field containing one of the words. The SOSL search results are returned in a list of lists. Each list contains an array of the returned records. In this case, the list has two elements. At index 0, the list contains the array of accounts. At index 1, the list contains the array of contacts.
+
+//Execute this snippet in the Execute Anonymous window of the Developer Console. Next, inspect the debug log to verify that all records are returned.
+
+List<List<sObject>> searchList = [FIND 'Wingo OR SFDC' IN ALL FIELDS 
+                   RETURNING Account(Name),Contact(FirstName,LastName,Department)];
+Account[] searchAccounts = (Account[])searchList[0];
+Contact[] searchContacts = (Contact[])searchList[1];
+System.debug('Found the following accounts.');
+for (Account a : searchAccounts) {
+    System.debug(a.Name);
+}
+System.debug('Found the following contacts.');
+for (Contact c : searchContacts) {
+    System.debug(c.LastName + ', ' + c.FirstName);
+}
