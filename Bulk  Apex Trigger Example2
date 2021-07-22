@@ -1,0 +1,25 @@
+ if you don’t need the account parent records, you can retrieve only the opportunities that are related to the accounts within this trigger context. This list is specified in the WHERE clause by matching the AccountId field of the opportunity to the ID of accounts in Trigger.New: WHERE AccountId IN :Trigger.New. The returned opportunities are for all accounts in this trigger context and not for a specific account. This next example shows the query used to get all related opportunities.
+
+trigger SoqlTriggerBulk on Account(after update) {  
+    // Perform SOQL query once.    
+    // Get the related opportunities for the accounts in this trigger.
+    List<Opportunity> relatedOpps = [SELECT Id,Name,CloseDate FROM Opportunity
+        WHERE AccountId IN :Trigger.New];
+  
+    // Iterate over the related opportunities    
+    for(Opportunity opp : relatedOpps) { 
+        // Do some other processing
+    }
+}
+You can reduce the previous example in size by combining the SOQL query with the for loop in one statement: the SOQL for loop. Here is another version of this bulk trigger using a SOQL for loop.
+
+trigger SoqlTriggerBulk on Account(after update) {  
+    // Perform SOQL query once.    
+    // Get the related opportunities for the accounts in this trigger,
+    // and iterate over those records.
+    for(Opportunity opp : [SELECT Id,Name,CloseDate FROM Opportunity
+        WHERE AccountId IN :Trigger.New]) {
+  
+        // Do some other processing
+    }
+}
