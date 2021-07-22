@@ -1,0 +1,15 @@
+After the records and their related records are obtained, the for loop iterates over the records of interest by using the collection variable—in this case, acctsWithOpps. The collection variable holds the results of the SOQL query. That way, the for loop iterates only over the records we want to operate on. Because the related records are already obtained, no further queries are needed within the loop to get those records.
+
+trigger SoqlTriggerBulk on Account(after update) {  
+    // Perform SOQL query once.    
+    // Get the accounts and their related opportunities.
+    List<Account> acctsWithOpps = 
+        [SELECT Id,(SELECT Id,Name,CloseDate FROM Opportunities) 
+         FROM Account WHERE Id IN :Trigger.New];
+  
+    // Iterate over the returned accounts    
+    for(Account a : acctsWithOpps) { 
+        Opportunity[] relatedOpps = a.Opportunities;  
+        // Do some other processing
+    }
+}
