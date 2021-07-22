@@ -14,7 +14,7 @@ Bulkify the trigger so that it can insert or update 200 or more opportunities
 ***************************************************************************************
 
 trigger ClosedOpportunityTrigger on Opportunity (after insert,after update) {
-    List<Task>=new List<Tast>();
+    List<Task>taskList=new List<Tast>();
     for(Opportunity opp: Trigger.New){
         if(opp.StageName=='Closed Won'){
             taskList.add(new Tast(Subject='Follow up Test Task',whatId=opp.Id));
