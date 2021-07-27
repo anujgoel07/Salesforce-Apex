@@ -1,0 +1,45 @@
+Create a Unit Test for a Simple Apex Trigger
+Create and install a simple Apex trigger which blocks inserts and updates to any contact with a last name of 'INVALIDNAME'. You'll copy the code for the class from GitHub. Then write unit tests that achieve 100% code coverage.
+Create an Apex trigger on the Contact object
+Name: RestrictContactByName
+Code: Copy from GitHub
+Place the unit tests in a separate test class
+Name: TestRestrictContactByName
+Goal: 100% test coverage
+Run your test class at least once
+
+
+
+trigger RestrictContactByName on Contact (before insert, before update) {
+	
+	//check contacts prior to insert or update for invalid data
+	For (Contact c : Trigger.New) {
+		if(c.LastName == 'INVALIDNAME') {	//invalidname is invalid
+			c.AddError('The Last Name "'+c.LastName+'" is not allowed for DML');
+		}
+
+	}
+
+
+
+}
+
+
+
+//Test
+
+@isTest
+public class TestRestrictContactByName {
+    @isTest static void createBadContact(){
+        Contact c=new Contact(FirstName='John',LastName='INVALIDNAME');
+        Test.startTest();
+        Database.SaveResult result=Database.insert(c,false);
+        Test.stopTest();
+        System.assert(!result.isSuccess());
+    }
+    
+    
+    
+}
+
+
